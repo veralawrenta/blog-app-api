@@ -1,6 +1,10 @@
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 
 export const hashPassword = async (plainPassword: string) => {
     const salt = 10; // bisa dari 8 -12.
     return await hash(plainPassword, salt);
+}
+
+export const comparePassword = async (plainPassword: string, hashPassword:string) => {
+    return await compare(plainPassword, hashPassword)
 }
