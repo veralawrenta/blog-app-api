@@ -2,18 +2,19 @@ import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 
 export class AuthController {
-    authService: AuthService;
+  authService: AuthService;
 
-    constructor() {
-        this.authService = new AuthService();
-    }
-    register = async (req: Request, res: Response) => {
-        const result = await this.authService.register(req.body);
-        return res.status(200).send(result);
-    }
+  constructor() {
+    this.authService = new AuthService();
+  }
 
-    login = async (req: Request, res: Response) => {
-        const result = await this.authService.login(req.body);
-        return res.status(200).send(result);
-    }
+  register = async (req: Request, res: Response) => {
+    const result = await this.authService.register(req.body);
+    return res.status(200).send(result);
+  };
+
+  login = async (req: Request, res: Response) => {
+    const result = await this.authService.login(req.body);
+    return res.status(200).send(result);
+  };
 }
