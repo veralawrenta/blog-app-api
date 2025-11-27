@@ -18,6 +18,7 @@ export class BlogRouter {
   }
 
   private initRoutes = () => {
+    this.router.get("/", this.blogController.getBlogs);
     this.router.post(
       "/",
       this.jwtMiddleware.verifyToken(process.env.JWT_SECRET!),

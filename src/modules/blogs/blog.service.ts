@@ -1,7 +1,9 @@
+import { Prisma } from "../../generated/prisma/client";
 import { ApiError } from "../../utils/api-error";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateBlogDTO } from "./dto/create-blog.dto";
+import { GetBlogsDTO } from "./dto/get-blogs.dto";
 
 export class BlogService {
   prisma: PrismaService;
@@ -37,4 +39,31 @@ export class BlogService {
 
     return { message: "create blog success" };
   };
-}
+
+  getBlogs = async (query: GetBlogsDTO) => {
+    const {page, sortBy, sortOrder, take, search} = query;
+
+    const whereClause: Prisma.BlogWhereInput = {};
+
+    if (search) {
+      whereClause.title = { contains: search };
+    }
+
+    const blogs = await this.prisma.blog.findMany({
+      where: whereClause,
+      orderBy: { [sortBy]: sortOrder },
+      skip: (page - 1) * take,
+      take: take,
+    });
+
+    const total = await this.prisma.blog.count({
+      where: whereClause
+    });
+
+    return {
+      data: blogs,
+      meta: { page, take, total }, //informasi mengenai data2 yang dikirimkan
+    };
+  };
+
+};
