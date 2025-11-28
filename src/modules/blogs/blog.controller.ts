@@ -29,4 +29,9 @@ export class BlogController {
         const result = await this.blogService.getBlogs(query);
         return res.status(200).send(result);
       }
+      getBlog = async (req: Request, res : Response) => {
+        const id = Number(req.params.id);
+        const result = await this.blogService.getBlog(id);
+        return res.status(200).send(result);
+      }
 }
