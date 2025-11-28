@@ -25,21 +25,63 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  blogs Blog []
+  blogs        Blog[]
+  events       Event[]
+  transactions Transaction[]
+
   @@map("users")
 }
 
 model Blog {
-  id        Int      @id @default(autoincrement())
-  title     String   @unique
-  description String @db.Text
-  thumbnail String 
-  content String
-  category String
-  userId   Int
-  user User @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String   @db.Text
+  thumbnail   String
+  content     String
+  category    String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@map("blogs")
+  @@map("events")
+}
+
+model Event {
+  id            Int           @id @default(autoincrement())
+  organizerId   Int
+  organizer     User          @relation(fields: [organizerId], references: [id])
+  title         String        @unique
+  date          DateTime
+  availableSeat Int
+  price         Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  user    User  @relation(fields: [userId], references: [id])
+  eventId Int
+  event   Event @relation(fields: [eventId], references: [id])
+
+  quantity  Int
+  price     Int
+  status    TransactionStatus @default(WAITING_FOR_PAYMENT)
+  payment_proof String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@map("transactions")
+}
+
+enum TransactionStatus {
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_CONFIRMATION
+  ACCEPTED
+  REJECTED
+  EXPIRED
+  CANCELED
 }
