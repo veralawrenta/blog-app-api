@@ -66,4 +66,17 @@ export class BlogService {
     };
   };
 
-};
+  getBlog = async (id: number) => {
+    const blog = await this.prisma.blog.findFirst({
+      where: { id },
+      include: { 
+        user: {
+          omit: {
+            password:true}
+          }
+        },
+    });
+    if (!blog) throw new ApiError ("blog not found", 404);
+    return blog;
+  }
+}
